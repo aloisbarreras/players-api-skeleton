@@ -6,10 +6,10 @@ const apiRoutes = require('./api');
 const app = express();
 
 app.use(bodyParser.json());
+app.use(expressValidator());
 
 // api routes
 app.use('/api', apiRoutes);
-app.use(expressValidator());
 
 // 404 handler
 app.use((req, res, next) => {
