@@ -6,7 +6,7 @@ const player = require('./player-api');
 const router = Router();
 
 router.use(auth);
-router.use(user);
-router.use(player);
+router.use('/user', user);
+router.use('/player', player);
 
 module.exports = router;
