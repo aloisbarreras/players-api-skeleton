@@ -8,7 +8,7 @@ const app = express();
 app.use(bodyParser.json());
 
 // api routes
-app.use(apiRoutes);
+app.use('/api', apiRoutes);
 app.use(expressValidator());
 
 // 404 handler
