@@ -35,11 +35,11 @@ describe('Player API', () => {
     });
 
     ['first_name', 'last_name', 'rating', 'handedness'].forEach(field => {
-      it(`should fail if ${field} not present`, done => {
+      it(`should fail if ${ field } not present`, done => {
         chai.request(server)
           .post('/api/players')
           .send(_.omit(data.player, field))
-          .set('Authorization', `Bearer ${token}`)
+          .set('Authorization', `Bearer ${ token }`)
           .end(err => {
             expect(err).to.exist;
             expect(err.status).to.equal(409);
@@ -54,7 +54,7 @@ describe('Player API', () => {
           chai.request(server)
             .post('/api/players')
             .send(data.player)
-            .set('Authorization', `Bearer ${token}`)
+            .set('Authorization', `Bearer ${ token }`)
             .end(err => {
               expect(err).to.exist;
               expect(err.status).to.equal(409);
@@ -70,7 +70,7 @@ describe('Player API', () => {
       chai.request(server)
         .post('/api/players')
         .send(data.player)
-        .set('Authorization', `Bearer ${token}`)
+        .set('Authorization', `Bearer ${ token }`)
         .end((err, res) => {
           expect(err).not.to.exist;
           expect(res.status).to.equal(201);
@@ -102,7 +102,7 @@ describe('Player API', () => {
       try {
         res = await chai.request(server)
           .get('/api/players')
-          .set('Authorization', `Bearer ${token}`);
+          .set('Authorization', `Bearer ${ token }`);
       } catch (err) {
         error = err;
       }
@@ -116,14 +116,14 @@ describe('Player API', () => {
     });
 
     it('should deliver all players', async () => {
-      await Player.create(data.player, data.user.email);
-      await Player.create(data.player2, data.user.email);
+      await Player.create(data.player);
+      await Player.create(data.player2);
 
       let res, error;
       try {
         res = await chai.request(server)
           .get('/api/players')
-          .set('Authorization', `Bearer ${token}`);
+          .set('Authorization', `Bearer ${ token }`);
       } catch (err) {
         error = err;
       }
@@ -144,13 +144,13 @@ describe('Player API', () => {
         .send(Object.assign({}, data.user, { email: 'seconduser@foo.com' }));
 
       await Player.create(data.player);
-      await Player.create(Object.assign({}, data.player2, { created_by: userRes.body.user.id }), data.user.email);
+      await Player.create(Object.assign({}, data.player2, { created_by: userRes.body.user.id }));
 
       let res, error;
       try {
         res = await chai.request(server)
           .get('/api/players')
-          .set('Authorization', `Bearer ${token}`);
+          .set('Authorization', `Bearer ${ token }`);
       } catch (err) {
         error = err;
       }
