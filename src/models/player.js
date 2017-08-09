@@ -1,53 +1,46 @@
 const _ = require('lodash');
-const debug = require('debug')('players-api-skeleton:players-model');
 
-let players = [];
-
-let currentId = 1;
-
-async function createPlayer(playerDetails) {
-  debug('Creating player: ', playerDetails);
-  const newPlayer = _.clone(playerDetails);
-  newPlayer.id = `${currentId}`;
-
-  currentId++;
-
-  // "save" the player
-  players.push(newPlayer);
-
-  return newPlayer;
-}
-
-async function removePlayer(query) {
-  if (query.id) {
-    _.remove(players, p => p.created_by === query.id);
-    return;
+class PlayerStore {
+  constructor() {
+    this.players = [];
+    this.currentId = 1;
   }
 
-  players = [];
+  async create(playerDetails) {
+    const newPlayer = _.clone(playerDetails);
+    newPlayer.id = `${this.currentId}`;
+
+    this.currentId++;
+
+    // "save" the player
+    this.players.push(newPlayer);
+
+    return newPlayer;
+  }
+
+  async remove(query) {
+    if (query.id) {
+      _.remove(this.players, p => p.created_by === query.id);
+      return;
+    }
+
+    this.players = [];
+  }
+
+  async findOne(query) {
+    const player = _.find(this.players, query);
+    return _.clone(player);
+  }
+
+  async findById(id) {
+    const player = _.find(this.players, { id });
+    return _.clone(player);
+  }
+
+  async find(query) {
+    const userPlayers = _.filter(this.players, query);
+    return userPlayers;
+  }
 }
 
-async function findOnePlayer(query) {
-  debug('Finding one player with query: ', query);
-  const player = _.find(players, query);
-  debug('Find player results: ', player);
-  return _.clone(player);
-}
-
-async function findById(id) {
-  const player = _.find(players, { id });
-  return _.clone(player);
-}
-
-async function findPlayers(query) {
-  const userPlayers = _.filter(players, query);
-  return userPlayers;
-}
-
-module.exports = {
-  create: createPlayer,
-  find: findPlayers,
-  findOne: findOnePlayer,
-  findById,
-  remove: removePlayer
-};
+module.exports = new PlayerStore();
