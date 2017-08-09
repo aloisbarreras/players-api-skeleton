@@ -176,7 +176,7 @@ router.get('/', async (req, res, next) => {
 
 router.delete('/:id', async (req, res, next) => {
   try {
-    // do some simple sanity checks on the body params
+    // do some simple sanity checks on the url params
     req.checkParams({
       id: {
         notEmpty: true,
