@@ -5,6 +5,9 @@ const Player = require('../models/player');
 
 const router = Router();
 
+// all of these routes need auth
+router.use(verifyJwt());
+
 /**
  * @api {post} /api/players
  * @apiDescription Create a player
@@ -30,7 +33,7 @@ const router = Router();
  *
  */
 
-router.post('/', verifyJwt(), async (req, res, next) => {
+router.post('/', async (req, res, next) => {
   try {
     const { id } = req.token;
     // do some simple sanity checks on the body params
@@ -51,6 +54,10 @@ router.post('/', verifyJwt(), async (req, res, next) => {
         notEmpty: true
       }
     });
+
+    // this guy doesn't want to work in the schema for some reason,
+    // just check for it the traditional way
+    req.checkBody('handedness').isIn(['left', 'right']);
 
     debug('received request: ', req.body);
 
@@ -134,7 +141,7 @@ router.post('/', verifyJwt(), async (req, res, next) => {
  *
  */
 
-router.get('/', verifyJwt(), async (req, res, next) => {
+router.get('/', async (req, res, next) => {
   try {
     const { id } = req.token;
 
@@ -175,7 +182,7 @@ router.get('/', verifyJwt(), async (req, res, next) => {
  *
  */
 
-router.delete('/:id', verifyJwt(), async (req, res, next) => {
+router.delete('/:id', async (req, res, next) => {
   try {
     // do some simple sanity checks on the body params
     req.checkParams({
