@@ -1,49 +1,44 @@
 const _ = require('lodash');
 
-// simple storage mechanism
-// store users by emails
-let users = {};
-
-// fake primary key
-// incrementing integer every time a user is created
-let currentId = 1;
-
-async function createUser(userDetails) {
-  const { email } = userDetails;
-  if (users[email]) {
-    const err = new Error('User with email already exists');
-    err.status = 409;
-    throw err;
+class UserStore {
+  constructor() {
+    this.users = {};
+    this.currentId = 1;
   }
 
-  userDetails.id = `${currentId}`;
-  // "save" the user
-  users[email] = userDetails;
+  async create(userDetails) {
+    const { email } = userDetails;
+    if (this.users[email]) {
+      const err = new Error('User with email already exists');
+      err.status = 409;
+      throw err;
+    }
 
-  // increment the primary key
-  currentId++;
-  return _.clone(userDetails);
-}
+    userDetails.id = `${this.currentId}`;
+    // "save" the user
+    this.users[email] = userDetails;
 
-async function removeUser(userDetails) {
-  // quick and dirty way to do this
-  // if there is an email specified, remove that one user.
-  // otherwise remove them all
-  const { email } = userDetails;
-  if (email) {
-    delete users[email];
-    return;
+    // increment the primary key
+    this.currentId++;
+    return _.clone(userDetails);
   }
 
-  users = {};
+  async remove(userDetails) {
+    // quick and dirty way to do this
+    // if there is an email specified, remove that one user.
+    // otherwise remove them all
+    const { email } = userDetails;
+    if (email) {
+      delete this.users[email];
+      return;
+    }
+
+    this.users = {};
+  }
+
+  async findOne(email) {
+    return _.clone(this.users[email]);
+  }
 }
 
-async function findOneUser(email) {
-  return _.clone(users[email]);
-}
-
-module.exports = {
-  create: createUser,
-  remove: removeUser,
-  findOne: findOneUser
-};
+module.exports = new UserStore();
