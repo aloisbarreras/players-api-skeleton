@@ -78,7 +78,7 @@ router.post('/', async (req, res, next) => {
     });
 
     // generate a JWT, just use the email as the payload
-    const token = await jwt.sign({ email });
+    const token = await jwt.sign({ id: newUser.id });
 
     // remove the password from the response
     // this is dirty, normall this is handled in a mongoose toJSON method

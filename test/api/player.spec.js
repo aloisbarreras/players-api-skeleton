@@ -166,72 +166,72 @@ describe('Player API', () => {
     });
   });
 
-  // describe('DELETE /players/:id', () => {
-  //   beforeEach(async () => {
-  //     await Player.remove({});
-  //   });
+  describe('DELETE /players/:id', () => {
+    beforeEach(async () => {
+      await Player.remove({});
+    });
 
-  //   it('should fail if token not provided', done => {
-  //     chai.request(server)
-  //       .delete('/api/players/1')
-  //       .end(err => {
-  //         expect(err).to.exist;
-  //         expect(err.status).to.equal(403);
-  //         done();
-  //       });
-  //   });
+    it('should fail if token not provided', done => {
+      chai.request(server)
+        .delete('/api/players/1')
+        .end(err => {
+          expect(err).to.exist;
+          expect(err.status).to.equal(403);
+          done();
+        });
+    });
 
-  //   it('should fail if player does not exist', async () => {
-  //     let res, error;
-  //     try {
-  //       res = await chai.request(server)
-  //         .delete('/api/players/1')
-  //         .set('Authorization', `Bearer ${ token }`);
-  //     } catch (err) {
-  //       error = err;
-  //     }
+    it('should fail if player does not exist', async () => {
+      let res, error;
+      try {
+        res = await chai.request(server)
+          .delete('/api/players/1')
+          .set('Authorization', `Bearer ${ token }`);
+      } catch (err) {
+        error = err;
+      }
 
-  //     expect(error).to.exist;
-  //     expect(res).not.to.exist;
-  //     expect(error.status).to.equal(404);
-  //   });
+      expect(error).to.exist;
+      expect(res).not.to.exist;
+      expect(error.status).to.equal(404);
+    });
 
-  //   it('should fail if player created by different user', async () => {
-  //     const userRes = await chai.request(server)
-  //       .post('/api/user')
-  //       .send(Object.assign({}, data.user, { email: '__deletetest__@foo.com' }));
+    it('should fail if player created by different user', async () => {
+      const userRes = await chai.request(server)
+        .post('/api/user')
+        .send(Object.assign({}, data.user, { email: '__deletetest__@foo.com' }));
 
-  //     let player = await Player.create(Object.assign({}, data.player, { created_by: userRes.body.user.id }));
+      let player = await Player.create(Object.assign({}, data.player, { created_by: userRes.body.user.id }));
 
-  //     let res, error;
-  //     try {
-  //       res = await chai.request(server)
-  //         .delete(`/api/players/${ player.id }`)
-  //         .set('Authorization', `Bearer ${ token }`);
-  //     } catch (err) {
-  //       error = err;
-  //     }
-  //     expect(error).to.exist;
-  //     expect(res).not.to.exist;
-  //     expect(error.status).to.equal(404);
-  //   });
+      let res, error;
+      try {
+        res = await chai.request(server)
+          .delete(`/api/players/${ player.id }`)
+          .set('Authorization', `Bearer ${ token }`);
+      } catch (err) {
+        error = err;
+      }
+      expect(error).to.exist;
+      expect(res).not.to.exist;
+      expect(error.status).to.equal(404);
+    });
 
-  //   it('should remove the player if successful', async () => {
-  //     let player = await Player.create(data.player);
-  //     let res, error;
-  //     try {
-  //       res = await chai.request(server)
-  //         .delete(`/api/players/${ player.id }`)
-  //         .set('Authorization', `Bearer ${ token }`);
-  //     } catch (err) {
-  //       error = err;
-  //     }
+    it('should remove the player if successful', async () => {
+      let player = await Player.create(data.player);
+      let res, error;
+      try {
+        res = await chai.request(server)
+          .delete(`/api/players/${ player.id }`)
+          .set('Authorization', `Bearer ${ token }`);
+      } catch (err) {
+        error = err;
+      }
 
-  //     expect(error).not.to.exist;
-  //     expect(res.status).to.equal(200);
+      expect(error).not.to.exist;
+      expect(res.status).to.equal(200);
 
-  //     player = await Player.findById(player.id);
-  //     expect(player).not.to.exist;
-  //   });
-  // });
+      player = await Player.findById(player.id);
+      expect(player).not.to.exist;
+    });
+  });
 });

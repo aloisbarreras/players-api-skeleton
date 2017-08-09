@@ -1,4 +1,5 @@
 const { Router } = require('express');
+const debug = require('debug')('players-api-skeleton:auth-api');
 const User = require('../models').User;
 const jwt = require('../util/jwt');
 
@@ -71,8 +72,10 @@ router.post('/login', async (req, res, next) => {
       throw err;
     }
 
-    // generate a JWT, just use the email as the payload
-    const token = await jwt.sign({ email });
+    debug('Logging in user: ', user);
+
+    // generate a JWT, just use the id as the payload
+    const token = await jwt.sign({ id: user.id });
 
     // remove the password from the response
     // this is dirty, normally this is handled in a mongoose toJSON method

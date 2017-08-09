@@ -1,70 +1,53 @@
 const _ = require('lodash');
+const debug = require('debug')('players-api-skeleton:players-model');
 
-// simple storage mechanism
-// store players by emails of user
 let players = [];
 
 let currentId = 1;
 
-async function createPlayer(playerDetails, userEmail) {
-  const player = _.clone(playerDetails);
-  const { first_name, last_name } = player;
-
-  // check for an existing player with first and last name
-  const existingPlayer =
-    _.find(players, p => {
-      return p.first_name === first_name && p.last_name === last_name;
-    });
-
-  if (existingPlayer) {
-    const err = new Error('That player already exists.');
-    err.status = 409;
-    throw err;
-  }
-
-  player.email = userEmail;
-  player.id = `${currentId}`;
+async function createPlayer(playerDetails) {
+  debug('Creating player: ', playerDetails);
+  const newPlayer = _.clone(playerDetails);
+  newPlayer.id = `${currentId}`;
 
   currentId++;
 
   // "save" the player
-  players.push(player);
+  players.push(newPlayer);
 
-  return player;
+  return newPlayer;
 }
 
-async function removePlayer(playerDetails, userEmail) {
-  // quick and dirty way to do this
-  // if there is a first and last name specified, remove that one player.
-  // otherwise remove them all
-  const { firstName, lastName } = playerDetails;
-  if (firstName && lastName) {
-    // find the player with same first and last name
-    const player = _.find(players, player => player.firstName === firstName && player.lastName === lastName);
-    // user can only delete his own player
-    if (player.email !== userEmail) {
-      const err = new Error('Unauthorized');
-      err.status = 403;
-      throw err;
-    }
-
-    // remove the player from the array
-    // super inefficient going through the array again, I know :)
-    players = players.remove(players, player => player.firstName === firstName && player.lastName === lastName);
+async function removePlayer(query) {
+  if (query.id) {
+    _.remove(players, p => p.created_by === query.id);
     return;
   }
 
   players = [];
 }
 
-async function findPlayers(userEmail) {
-  // get players for this user
-  const userPlayers = players.filter(player => player.email === userEmail);
+async function findOnePlayer(query) {
+  debug('Finding one player with query: ', query);
+  const player = _.find(players, query);
+  debug('Find player results: ', player);
+  return _.clone(player);
+}
+
+async function findById(id) {
+  const player = _.find(players, { id });
+  return _.clone(player);
+}
+
+async function findPlayers(query) {
+  const userPlayers = _.filter(players, query);
   return userPlayers;
 }
 
 module.exports = {
   create: createPlayer,
   find: findPlayers,
+  findOne: findOnePlayer,
+  findById,
   remove: removePlayer
 };
