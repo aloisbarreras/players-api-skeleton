@@ -4,12 +4,17 @@ const _ = require('lodash');
 // store players by emails of user
 let players = [];
 
+let currentId = 1;
+
 async function createPlayer(playerDetails, userEmail) {
-  const { firstName, lastName } = playerDetails;
+  const player = _.clone(playerDetails);
+  const { first_name, last_name } = player;
 
   // check for an existing player with first and last name
   const existingPlayer =
-    _.find(players, player => player.firstName === firstName && player.lastName === lastName);
+    _.find(players, p => {
+      return p.first_name === first_name && p.last_name === last_name;
+    });
 
   if (existingPlayer) {
     const err = new Error('That player already exists.');
@@ -17,12 +22,15 @@ async function createPlayer(playerDetails, userEmail) {
     throw err;
   }
 
-  playerDetails.userEmail = userEmail;
+  player.email = userEmail;
+  player.id = `${currentId}`;
+
+  currentId++;
 
   // "save" the player
-  players.push(playerDetails);
+  players.push(player);
 
-  return _.clone(playerDetails);
+  return player;
 }
 
 async function removePlayer(playerDetails, userEmail) {
@@ -34,7 +42,7 @@ async function removePlayer(playerDetails, userEmail) {
     // find the player with same first and last name
     const player = _.find(players, player => player.firstName === firstName && player.lastName === lastName);
     // user can only delete his own player
-    if (player.userEmail !== userEmail) {
+    if (player.email !== userEmail) {
       const err = new Error('Unauthorized');
       err.status = 403;
       throw err;
@@ -49,7 +57,14 @@ async function removePlayer(playerDetails, userEmail) {
   players = [];
 }
 
+async function findPlayers(userEmail) {
+  // get players for this user
+  const userPlayers = players.filter(player => player.email === userEmail);
+  return userPlayers;
+}
+
 module.exports = {
   create: createPlayer,
+  find: findPlayers,
   remove: removePlayer
 };

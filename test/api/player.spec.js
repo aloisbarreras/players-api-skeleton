@@ -82,89 +82,89 @@ describe('Player API', () => {
     });
   });
 
-  // describe('GET /api/players', () => {
-  //   beforeEach(async () => {
-  //     await Player.remove({});
-  //   });
+  describe('GET /api/players', () => {
+    beforeEach(async () => {
+      await Player.remove({});
+    });
 
-  //   it('should fail if token not provided', done => {
-  //     chai.request(server)
-  //       .get('/api/players')
-  //       .end(err => {
-  //         expect(err).to.exist;
-  //         expect(err.status).to.equal(403);
-  //         done();
-  //       });
-  //   });
+    it('should fail if token not provided', done => {
+      chai.request(server)
+        .get('/api/players')
+        .end(err => {
+          expect(err).to.exist;
+          expect(err.status).to.equal(403);
+          done();
+        });
+    });
 
-  //   it('should deliver an empty array if no players', async () => {
-  //     let res, error;
-  //     try {
-  //       res = await chai.request(server)
-  //         .get('/api/players')
-  //         .set('Authorization', `Bearer ${ token }`);
-  //     } catch (err) {
-  //       error = err;
-  //     }
+    it('should deliver an empty array if no players', async () => {
+      let res, error;
+      try {
+        res = await chai.request(server)
+          .get('/api/players')
+          .set('Authorization', `Bearer ${token}`);
+      } catch (err) {
+        error = err;
+      }
 
-  //     expect(error).not.to.exist;
-  //     expect(res.status).to.equal(200);
-  //     expect(res.body).to.be.a('object');
-  //     expect(res.body.success).to.be.true;
-  //     expect(res.body.players).to.be.a('array');
-  //     expect(res.body.players.length).to.equal(0);
-  //   });
+      expect(error).not.to.exist;
+      expect(res.status).to.equal(200);
+      expect(res.body).to.be.a('object');
+      expect(res.body.success).to.be.true;
+      expect(res.body.players).to.be.a('array');
+      expect(res.body.players.length).to.equal(0);
+    });
 
-  //   it('should deliver all players', async () => {
-  //     await Player.create(data.player);
-  //     await Player.create(data.player2);
+    it('should deliver all players', async () => {
+      await Player.create(data.player, data.user.email);
+      await Player.create(data.player2, data.user.email);
 
-  //     let res, error;
-  //     try {
-  //       res = await chai.request(server)
-  //         .get('/api/players')
-  //         .set('Authorization', `Bearer ${ token }`);
-  //     } catch (err) {
-  //       error = err;
-  //     }
+      let res, error;
+      try {
+        res = await chai.request(server)
+          .get('/api/players')
+          .set('Authorization', `Bearer ${token}`);
+      } catch (err) {
+        error = err;
+      }
 
-  //     expect(error).not.to.exist;
-  //     expect(res.status).to.equal(200);
-  //     expect(res.body).to.be.a('object');
-  //     expect(res.body.success).to.be.true;
-  //     expect(res.body.players).to.be.a('array');
-  //     expect(res.body.players.length).to.equal(2);
+      expect(error).not.to.exist;
+      expect(res.status).to.equal(200);
+      expect(res.body).to.be.a('object');
+      expect(res.body.success).to.be.true;
+      expect(res.body.players).to.be.a('array');
+      expect(res.body.players.length).to.equal(2);
 
-  //     res.body.players.forEach(player => expect(player.id).to.be.a('string'));
-  //   });
+      res.body.players.forEach(player => expect(player.id).to.be.a('string'));
+    });
 
-  //   it('should not deliver players created by other users', async () => {
-  //     const userRes = await chai.request(server)
-  //       .post('/api/user')
-  //       .send(Object.assign({}, data.user, { email: 'seconduser@foo.com' }));
+    it('should not deliver players created by other users', async () => {
+      const userRes = await chai.request(server)
+        .post('/api/user')
+        .send(Object.assign({}, data.user, { email: 'seconduser@foo.com' }));
 
-  //     await Player.create(data.player);
-  //     await Player.create(Object.assign({}, data.player2, { created_by: userRes.body.user.id }));
+      await Player.create(data.player);
+      await Player.create(Object.assign({}, data.player2, { created_by: userRes.body.user.id }), data.user.email);
 
-  //     let res, error;
-  //     try {
-  //       res = await chai.request(server)
-  //         .get('/api/players')
-  //         .set('Authorization', `Bearer ${ token }`);
-  //     } catch (err) {
-  //       error = err;
-  //     }
+      let res, error;
+      try {
+        res = await chai.request(server)
+          .get('/api/players')
+          .set('Authorization', `Bearer ${token}`);
+      } catch (err) {
+        error = err;
+      }
 
-  //     expect(error).not.to.exist;
-  //     expect(res.status).to.equal(200);
-  //     expect(res.body).to.be.a('object');
-  //     expect(res.body.success).to.be.true;
-  //     expect(res.body.players).to.be.a('array');
-  //     expect(res.body.players.length).to.equal(1);
+      expect(error).not.to.exist;
+      expect(res.status).to.equal(200);
+      expect(res.body).to.be.a('object');
+      expect(res.body.success).to.be.true;
+      expect(res.body.players).to.be.a('array');
+      expect(res.body.players.length).to.equal(1);
 
-  //     res.body.players.forEach(player => expect(player.id).to.be.a('string'));
-  //   });
-  // });
+      res.body.players.forEach(player => expect(player.id).to.be.a('string'));
+    });
+  });
 
   // describe('DELETE /players/:id', () => {
   //   beforeEach(async () => {

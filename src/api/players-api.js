@@ -6,7 +6,7 @@ const router = Router();
 
 /**
  * @api {post} /api/players
- * @apiDescription Login a user
+ * @apiDescription Create a player
  * 
  * @apiHeader {String}    Authorization         Authorization value in Bearer format.
  *
@@ -80,6 +80,46 @@ router.post('/', verifyJwt(), async (req, res, next) => {
 
     // send it
     res.status(201).send(response);
+  } catch (err) {
+    next(err);
+  }
+});
+
+/**
+ * @api {get} /api/players
+ * @apiDescription List players.
+ * 
+ * @apiHeader {String}    Authorization         Authorization value in Bearer format.
+ *
+ * @apiParam {Boolean}    success               Success indicator.
+ * @apiParam {Array}      players               List of players.
+ *
+ * @apiSuccessExample {json} Success-Response:
+ *     HTTP/1.1 200 OK
+ *     {
+ *       success: true,
+ *       players: [
+ *         ...
+ *       ]
+ *     }
+ *
+ */
+
+router.get('/', verifyJwt(), async (req, res, next) => {
+  try {
+    const { email } = req.token;
+
+    // get the players
+    const players = await Player.find(email);
+
+    // construct the response
+    const response = {
+      success: true,
+      players
+    };
+
+    // send it
+    res.status(200).send(response);
   } catch (err) {
     next(err);
   }
