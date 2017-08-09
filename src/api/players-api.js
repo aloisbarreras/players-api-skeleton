@@ -202,6 +202,7 @@ router.delete('/:id', async (req, res, next) => {
     }
 
     // check the the user is authorized to perform this action
+    // can only delete players created_by yourself
     if (req.token.id !== existingPlayer.created_by) {
       const err = new Error('Unauthorized');
       err.status = 404;
