@@ -22,7 +22,7 @@ router.use(verifyJwt());
  * @apiParam {Object}     player                Player details.
  *
  * @apiSuccessExample {json} Success-Response:
- *     HTTP/1.1 200 OK
+ *     HTTP/1.1 201 OK
  *     {
  *       success: true,
  *       player: {
