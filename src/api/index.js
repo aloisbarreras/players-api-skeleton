@@ -7,6 +7,6 @@ const router = Router();
 
 router.use(auth);
 router.use('/user', user);
-router.use('/player', player);
+router.use('/players', player);
 
 module.exports = router;

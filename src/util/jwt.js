@@ -22,7 +22,6 @@ exports.verify = (token) => {
         return reject(err);
       }
 
-      console.log(decoded);
       resolve(decoded);
     });
   });
