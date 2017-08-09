@@ -1,5 +1,4 @@
 const { Router } = require('express');
-const debug = require('debug')('players-api-skeleton:players-api');
 const verifyJwt = require('../middleware/jwt-verify');
 const Player = require('../models/player');
 
@@ -59,12 +58,9 @@ router.post('/', async (req, res, next) => {
     // just check for it the traditional way
     req.checkBody('handedness').isIn(['left', 'right']);
 
-    debug('received request: ', req.body);
-
     // get the validation result and throw if something is missing
     const result = await req.getValidationResult();
     if (!result.isEmpty()) {
-      debug('Validation error: ', result.array());
       const err = new Error(result.array());
       err.status = 409;
       throw err;
@@ -81,7 +77,6 @@ router.post('/', async (req, res, next) => {
 
     // check the the user is authorized to perform this action
     if (id !== created_by) {
-      debug('User unauthorized to create player');
       const err = new Error('Unauthorized');
       err.status = 403;
       throw err;
@@ -91,7 +86,6 @@ router.post('/', async (req, res, next) => {
     const existingPlayer = await Player.findOne({ first_name, last_name });
 
     if (existingPlayer) {
-      debug('Found existing player with first_name last_name combo.');
       const err = new Error('That player already exists.');
       err.status = 409;
       throw err;
@@ -105,8 +99,6 @@ router.post('/', async (req, res, next) => {
       handedness,
       created_by
     });
-
-    debug('Created new player: ', newPlayer);
 
     // construct the response
     const response = {
@@ -195,7 +187,6 @@ router.delete('/:id', async (req, res, next) => {
     // get the validation result and throw if something is missing
     const result = await req.getValidationResult();
     if (!result.isEmpty()) {
-      debug('Validation error: ', result.array());
       const err = new Error(result.array());
       err.status = 409;
       throw err;
@@ -205,7 +196,6 @@ router.delete('/:id', async (req, res, next) => {
 
     const existingPlayer = await Player.findOne({ id: playerId });
     if (!existingPlayer) {
-      debug('Could not find existing player');
       const err = new Error('Player does not exist.');
       err.status = 404;
       throw err;
@@ -213,7 +203,6 @@ router.delete('/:id', async (req, res, next) => {
 
     // check the the user is authorized to perform this action
     if (req.token.id !== existingPlayer.created_by) {
-      debug('User unauthorized to delete player');
       const err = new Error('Unauthorized');
       err.status = 404;
       throw err;
