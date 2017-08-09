@@ -11,7 +11,7 @@ describe('User API', () => {
     });
 
     ['first_name', 'last_name', 'email'].forEach(field => {
-      it(`should fail if ${field} not present`, done => {
+      it(`should fail if ${ field } not present`, done => {
         chai.request(server)
           .post('/api/user')
           .send(_.omit(data.user, field))
