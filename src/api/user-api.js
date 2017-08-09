@@ -85,10 +85,6 @@ router.post('/', async (req, res, next) => {
     // or something similar
     delete newUser.password;
 
-    // just mock a userId
-    // normally the databse would generate this, but just fake one here so the test passes
-    newUser.id = 'my_id';
-
     // construct the response objec
     const response = {
       success: true,

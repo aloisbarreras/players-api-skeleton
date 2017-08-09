@@ -11,7 +11,7 @@ describe('User API', () => {
     });
 
     ['first_name', 'last_name', 'email'].forEach(field => {
-      it(`should fail if ${ field } not present`, done => {
+      it(`should fail if ${field} not present`, done => {
         chai.request(server)
           .post('/api/user')
           .send(_.omit(data.user, field))
@@ -68,49 +68,49 @@ describe('User API', () => {
     });
   });
 
-  // describe('POST /api/login', () => {
-  //   beforeEach(async () => {
-  //     await User.remove({});
-  //     await chai.request(server)
-  //       .post('/api/user')
-  //       .send(data.user);
-  //   });
+  describe('POST /api/login', () => {
+    beforeEach(async () => {
+      await User.remove({});
+      await chai.request(server)
+        .post('/api/user')
+        .send(data.user);
+    });
 
-  //   it('should fail if email not found', done => {
-  //     chai.request(server)
-  //       .post('/api/login')
-  //       .send({ email: 'notfound@email.com', password: data.password })
-  //       .end(err => {
-  //         expect(err).to.exist;
-  //         expect(err.status).to.equal(401);
-  //         done();
-  //       });
-  //   });
+    it('should fail if email not found', done => {
+      chai.request(server)
+        .post('/api/login')
+        .send({ email: 'notfound@email.com', password: data.password })
+        .end(err => {
+          expect(err).to.exist;
+          expect(err.status).to.equal(401);
+          done();
+        });
+    });
 
-  //   it('should fail if password invalid', done => {
-  //     chai.request(server)
-  //       .post('/api/login')
-  //       .send({ email: data.email, password: '__wrong__' })
-  //       .end(err => {
-  //         expect(err).to.exist;
-  //         expect(err.status).to.equal(401);
-  //         done();
-  //       });
-  //   });
+    it('should fail if password invalid', done => {
+      chai.request(server)
+        .post('/api/login')
+        .send({ email: data.email, password: '__wrong__' })
+        .end(err => {
+          expect(err).to.exist;
+          expect(err.status).to.equal(401);
+          done();
+        });
+    });
 
-  //   it('should deliver user and token if successful', done => {
-  //     chai.request(server)
-  //       .post('/api/login')
-  //       .send({ email: data.email, password: data.password })
-  //       .end((err, res) => {
-  //         expect(err).not.to.exist;
-  //         expect(res.status).to.equal(200);
-  //         expect(res.body.success).to.be.true;
-  //         expect(res.body.user).to.be.a('object');
-  //         expect(res.body.user.id).to.be.a('string');
-  //         expect(res.body.token).to.be.a('string');
-  //         done();
-  //       });
-  //   });
-  // });
+    it('should deliver user and token if successful', done => {
+      chai.request(server)
+        .post('/api/login')
+        .send({ email: data.email, password: data.password })
+        .end((err, res) => {
+          expect(err).not.to.exist;
+          expect(res.status).to.equal(200);
+          expect(res.body.success).to.be.true;
+          expect(res.body.user).to.be.a('object');
+          expect(res.body.user.id).to.be.a('string');
+          expect(res.body.token).to.be.a('string');
+          done();
+        });
+    });
+  });
 });

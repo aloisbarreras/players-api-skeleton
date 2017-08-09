@@ -1,12 +1,19 @@
+const _ = require('lodash');
+
 // simple storage mechanism
 // store users by emails
 let users = {};
+
+// fake primary key
+// incrementing integer every time a user is created
+let currentId = 1;
 
 module.exports = {
   Player: {},
   User: {
     create: createUser,
-    remove: removeUser
+    remove: removeUser,
+    findOne: findOneUser
   }
 };
 
@@ -18,8 +25,13 @@ async function createUser(userDetails) {
     throw err;
   }
 
+  userDetails.id = `${currentId}`;
+  // "save" the user
   users[email] = userDetails;
-  return userDetails;
+
+  // increment the primary key
+  currentId++;
+  return _.clone(userDetails);
 }
 
 async function removeUser(userDetails) {
@@ -33,4 +45,8 @@ async function removeUser(userDetails) {
   }
 
   users = {};
+}
+
+async function findOneUser(email) {
+  return _.clone(users[email]);
 }
